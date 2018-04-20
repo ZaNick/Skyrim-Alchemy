@@ -1,0 +1,205 @@
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Алхимический стол TES Skyrim">
+	<meta name="author" content="github.com/ZaNick">
+
+	<title>Алхимический стол TES Skyrim</title>
+	<!-- Angular Material style sheet -->
+	<style>
+		*,
+		*::before,
+		*::after {
+		box-sizing: border-box;
+		}
+		.container {
+			width: 100%;
+			padding-right: 15px;
+			padding-left: 15px;
+			margin-right: auto;
+			margin-left: auto;
+		}
+		.row {
+			display: flex;
+			flex-wrap: wrap;
+			margin-right: -15px;
+			margin-left: -15px
+		}
+		.col-md-4, .col-12{
+			position: relative;
+			width: 100%;
+			min-height: 1px;
+			padding-right: 15px;
+			padding-left: 15px
+		}
+		.match {
+			background-color: #dcdcdc;
+		}
+		.effect-list {
+			/* margin-top: 10px; */
+			margin-bottom: 20px;
+			box-shadow: 0 0 1px rgba(0, 0, 0, 0.3);
+			font-size: 14px;
+			padding: 5px 0;
+			overflow: auto;
+		}
+		.effect-list > div {
+			padding: 5px 15px;
+			white-space: nowrap;
+		}
+		@media(min-width: 576px) {
+			.container {
+				max-width: 540px;
+			}
+		}
+		@media(min-width: 768px) {
+			.container {
+				max-width: 720px;
+			}
+			.col-md-4 {
+				flex: 0 0 33.333333%;
+				max-width: 33.333333%
+			}
+			.effect-list {
+				min-height: 114px;
+			}
+		}
+		@media(min-width: 992px) {
+			.container {
+				max-width: 960px;
+			}
+		}
+		@media(min-width: 1200px) {
+			.container {
+				max-width: 1140px;
+			}
+		}
+	</style>
+	<link rel="stylesheet" href="./css/angular-material.min.css">
+</head>
+
+<body ng-app="Alchemy" ng-controller="ctrl" ng-cloak>
+	<div class="container">
+		<div class="row mb-5">
+			<div class="col-12">
+				<div class="row">
+					<div class="col-md-4">
+						<h2>Ингредиенты</h2>
+					</div>
+					<div class="col-md-4">
+						<h3>Фильтр: </h3>
+						<md-input-container class="md-block" flex-gt-sm>
+							<label>Мин. кол-во эффектов</label>
+							<md-select ng-model="effectsNumber" ng-change="clearTable()">
+								<md-option value="1">1</md-option>
+								<md-option value="2">2</md-option>
+								<md-option value="3">3</md-option>
+								<md-option value="4">4</md-option>
+								<md-option value="5">5</md-option>
+							</md-select>
+						</md-input-container>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<md-autocomplete
+					md-selected-item="I1"
+					md-no-cache="true"
+					md-search-text-change="searchTextChange(searchText1)"
+					md-search-text="searchText1"
+					md-selected-item-change="pickFirst(item)"
+					md-items="item in querySearch(searchText1, L1)"
+					md-item-text="item.name"
+					md-min-length="0"
+					placeholder="Первый ингредиент">
+					<md-item-template>
+						<span md-highlight-text="searchText1" md-highlight-flags="^i">{{item.name}}</span>
+					</md-item-template>
+					<md-not-found>
+						Такого ингредиента нет: "{{searchText1}}".
+					</md-not-found>
+				</md-autocomplete>
+				<div class="effect-list">
+					<div ng-class="match(I1.effect_1)">{{I1.effect_1}}</div>
+					<div ng-class="match(I1.effect_2)">{{I1.effect_2}}</div>
+					<div ng-class="match(I1.effect_3)">{{I1.effect_3}}</div>
+					<div ng-class="match(I1.effect_4)">{{I1.effect_4}}</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<md-autocomplete ng-disabled="!I1.name"
+					md-selected-item="I2"
+					md-no-cache="true" 
+					md-search-text-change="searchTextChange(searchText2)"
+					md-search-text="searchText2"
+					md-selected-item-change="pickSecond(item)" 
+					md-items="item in querySearch(searchText2, L2)"
+					md-item-text="item.name"
+					md-min-length="0"
+					placeholder="Второй ингредиент">
+					<md-item-template>
+						<span md-highlight-text="searchText2" md-highlight-flags="^i">{{item.name}}</span>
+					</md-item-template>
+					<md-not-found>
+						Такого ингредиента нет: "{{searchText2}}".
+					</md-not-found>
+				</md-autocomplete>
+				<div class="effect-list">
+					<div ng-class="match(I2.effect_1)">{{I2.effect_1}}</div>
+					<div ng-class="match(I2.effect_2)">{{I2.effect_2}}</div>
+					<div ng-class="match(I2.effect_3)">{{I2.effect_3}}</div>
+					<div ng-class="match(I2.effect_4)">{{I2.effect_4}}</div>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<md-autocomplete
+					ng-disabled="!I2.name"
+					md-selected-item="I3"
+					md-no-cache="true"
+					md-search-text-change="searchTextChange(searchText3)"
+					md-search-text="searchText3"
+					md-selected-item-change="pickThird(item)"
+					md-items="item in querySearch(searchText3, L3)"
+					md-item-text="item.name"
+					md-min-length="0"
+					placeholder="Третий ингредиент">
+					<md-item-template>
+						<span md-highlight-text="searchText3" md-highlight-flags="^i">{{item.name}}</span>
+					</md-item-template>
+					<md-not-found>
+						Такого ингредиента нет: "{{searchText3}}".
+					</md-not-found>
+				</md-autocomplete>
+				<div class="effect-list">
+					<div ng-class="match(I3.effect_1)">{{I3.effect_1}}</div>
+					<div ng-class="match(I3.effect_2)">{{I3.effect_2}}</div>
+					<div ng-class="match(I3.effect_3)">{{I3.effect_3}}</div>
+					<div ng-class="match(I3.effect_4)">{{I3.effect_4}}</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12">
+				<div>
+					<h2>Результат</h2>
+					<ul>
+						<li ng-repeat="effect in currMix">{{effect}}</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Angular Material requires Angular.js Libraries -->
+	<script src="./js/angular.min.js"></script>
+	<script src="./js/angular-animate.min.js"></script>
+	<script src="./js/angular-aria.min.js"></script>
+	<script src="./js/angular-messages.min.js"></script>
+
+	<!-- Angular Material Library -->
+	<script src="./js/angular-material.min.js"></script>
+	<script src="./js/alchMaterial.js"></script>
+</body>
+
+</html>
